@@ -7,44 +7,48 @@ import (
 
 // Commit is a snapshot of the repository at a given time
 type Commit struct {
-	ID string
-	Message string
-	Parent []string // parent commits, can be multiple for merge commits
-	Author string
-	Date time.Time
-	TreeID string
+	ID       string
+	Message  string
+	Parents  []string
+	Author   string
+	Date     time.Time
+	TreeID   string
 }
-
-// FileLog this represents the state of a file, can be referenced by multiple tree entries
+// FileLog is a raw content of a file at a given time
 type FileLog struct {
-	ID string
+	ID      string
 	Content []byte
 }
 
+type ObjectType int
+
+const (
+	ObjectFileLog ObjectType = iota
+	ObjectTree
+)
 // TreeEntry is a single entry in a tree
 type TreeEntry struct {
-	ID string
-	Hash string
-	FileLogID string
-	Mode fs.FileMode
+	Name     string
+	Mode     fs.FileMode
+	ObjectID string
+	Type     ObjectType // FileLog or Tree, for clarity. Tree can be in case of a directory.
 }
 
 // Tree is a directory structure at a given commit
 type Tree struct {
-	ID string
-	Entries []TreeEntry
-}
-
-// Index is a flat list of files that are going to be committed
-type Index struct {
-	ID string
+	ID      string
 	Entries []TreeEntry
 }
 
 // IndexEntry is a single entry in the index
-// it represents a file that is going to be committed
 type IndexEntry struct {
-	Path string
-	Date time.Time
+	Path      string
 	FileLogID string
+	Mode      fs.FileMode
+	Size      int64
+	ModTime   time.Time
+}
+
+type Index struct {
+	Entries map[string]IndexEntry
 }
