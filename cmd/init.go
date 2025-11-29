@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
+	"github.com/Drigger91/gitter/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -17,18 +17,12 @@ var initCmd = &cobra.Command{
 			return err
 		}
 
-		gitterDir := filepath.Join(dir, ".gitter")
-
-		if _, err := os.Stat(gitterDir); err == nil {
-			fmt.Println(".gitter already exists")
-			return nil
-		}
-
-		if err := os.MkdirAll(gitterDir, 0755); err != nil {
+		repo, err := internal.InitRepo(dir)
+		if err != nil {
 			return err
 		}
 
-		fmt.Println("Initialized empty gitter repository in", gitterDir)
+		fmt.Println("Initialized empty gitter repository in", repo.GitterDir)
 		return nil
 	},
 }
