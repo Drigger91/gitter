@@ -1,0 +1,1 @@
+my personal and very naive take on git
